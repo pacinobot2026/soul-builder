@@ -31,18 +31,10 @@ export default function Home() {
     {
       id: 'quick',
       icon: '⚡',
-      name: 'Quick Build',
+      name: 'Quick Start',
       description: 'Get started fast with 3 essential questions. Perfect for testing the waters.',
       time: '2 min',
       questions: 3
-    },
-    {
-      id: 'deep',
-      icon: '🎯',
-      name: 'Deep Build',
-      description: 'Complete interview with 15 questions. Build a fully customized AI personality.',
-      time: '10 min',
-      questions: 15
     },
     {
       id: 'ceo',
@@ -51,6 +43,14 @@ export default function Home() {
       description: 'Build an AI that runs your operations. Proactive, autonomous, overnight builder.',
       time: '5 min',
       questions: 6
+    },
+    {
+      id: 'deep',
+      icon: '🎯',
+      name: 'Deep Dive',
+      description: 'Complete interview with 15 questions. Build a fully customized AI personality.',
+      time: '10 min',
+      questions: 15
     }
   ];
 
