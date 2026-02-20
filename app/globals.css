@@ -199,6 +199,12 @@ body {
   transition: all 0.3s;
 }
 
+.question-card select option {
+  background: #1a1a2e;
+  color: #e2e8f0;
+  padding: 10px;
+}
+
 .question-card input:focus,
 .question-card textarea:focus,
 .question-card select:focus {
