@@ -306,6 +306,9 @@ body {
 .philosophy ul {
   list-style: none;
   padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px 30px;
 }
 
 .philosophy li {
@@ -321,6 +324,12 @@ body {
   position: absolute;
   left: 0;
   font-size: 1.3rem;
+}
+
+@media (max-width: 768px) {
+  .philosophy ul {
+    grid-template-columns: 1fr;
+  }
 }
 
 .back-button {
