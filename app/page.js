@@ -12,7 +12,16 @@ export default function Home() {
     incomeGoal: '',
     proactivity: 'do-and-report',
     boundaries: '',
-    teachingStyle: ''
+    teachingStyle: '',
+    communicationStyle: '',
+    workSchedule: '',
+    riskTolerance: 'balanced',
+    coreValues: '',
+    dealBreakers: '',
+    successDefinition: '',
+    technicalLevel: 'intermediate',
+    teamContext: '',
+    frustrations: ''
   });
   
   const [generated, setGenerated] = useState(false);
@@ -31,17 +40,17 @@ export default function Home() {
       id: 'deep',
       icon: '🎯',
       name: 'Deep Build',
-      description: 'Complete interview with all 6 questions. Build a fully customized AI personality.',
-      time: '5 min',
-      questions: 6
+      description: 'Complete interview with 15 questions. Build a fully customized AI personality.',
+      time: '10 min',
+      questions: 15
     },
     {
       id: 'ceo',
       icon: '👔',
       name: 'CEO Mode',
       description: 'Build an AI that runs your operations. Proactive, autonomous, overnight builder.',
-      time: '3 min',
-      questions: 4
+      time: '5 min',
+      questions: 6
     }
   ];
 
@@ -53,14 +62,6 @@ export default function Home() {
       placeholder: 'Example: Building a local media site for Phoenix real estate news, with an email list of 5K subscribers. Also creating courses teaching other agents to do the same...',
       type: 'textarea',
       modes: ['quick', 'deep', 'ceo']
-    },
-    {
-      id: 'avoiding',
-      title: 'What have you been avoiding?',
-      label: 'What do you KNOW you should do but keep putting off?',
-      placeholder: 'Example: Sending weekly emails, writing articles consistently, creating that course I keep talking about, following up with leads...',
-      type: 'textarea',
-      modes: ['deep', 'ceo']
     },
     {
       id: 'incomeGoal',
@@ -83,6 +84,94 @@ export default function Home() {
       modes: ['quick', 'deep', 'ceo']
     },
     {
+      id: 'avoiding',
+      title: 'What have you been avoiding?',
+      label: 'What do you KNOW you should do but keep putting off?',
+      placeholder: 'Example: Sending weekly emails, writing articles consistently, creating that course I keep talking about, following up with leads...',
+      type: 'textarea',
+      modes: ['deep', 'ceo']
+    },
+    {
+      id: 'communicationStyle',
+      title: 'How do you communicate?',
+      label: 'What\'s your natural style?',
+      placeholder: 'Example: I\'m direct and to-the-point. I don\'t like fluff or corporate speak. I use stories and real examples. I challenge people but I\'m encouraging...',
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
+      id: 'workSchedule',
+      title: 'When should your AI work?',
+      label: 'What hours/times should your AI be most active?',
+      placeholder: 'Example: I work 9am-6pm EST weekdays, but check messages until 10pm. Weekends are light unless urgent. AI can work overnight building things...',
+      type: 'textarea',
+      modes: ['deep', 'ceo']
+    },
+    {
+      id: 'riskTolerance',
+      title: 'How do you approach decisions?',
+      label: 'Your decision-making style',
+      type: 'select',
+      options: [
+        { value: 'conservative', label: 'Conservative - Move carefully, minimize risk' },
+        { value: 'balanced', label: 'Balanced - Calculated risks, test and learn' },
+        { value: 'aggressive', label: 'Aggressive - Move fast, break things, iterate' }
+      ],
+      modes: ['deep', 'ceo']
+    },
+    {
+      id: 'coreValues',
+      title: 'What are your core values?',
+      label: 'What 3-5 values guide how you operate?',
+      placeholder: 'Example: Integrity, Speed of execution, Community first, Transparency, Always teaching others...',
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
+      id: 'dealBreakers',
+      title: 'What are your deal-breakers?',
+      label: 'What should your AI NEVER do under any circumstances?',
+      placeholder: 'Example: Never lie or mislead, Never spam people, Never compromise on quality to save time, Never make financial commitments without me...',
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
+      id: 'successDefinition',
+      title: 'What does success look like?',
+      label: 'What makes a "great day" for you?',
+      placeholder: 'Example: Shipped something new, helped a student breakthrough, moved the business forward, learned something valuable, felt progress not just busy...',
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
+      id: 'technicalLevel',
+      title: 'What\'s your technical skill level?',
+      label: 'How comfortable are you with tech?',
+      type: 'select',
+      options: [
+        { value: 'beginner', label: 'Beginner - Tech intimidates me, need hand-holding' },
+        { value: 'intermediate', label: 'Intermediate - Can figure things out with guidance' },
+        { value: 'advanced', label: 'Advanced - Comfortable with code, APIs, automation' }
+      ],
+      modes: ['deep']
+    },
+    {
+      id: 'teamContext',
+      title: 'Do you have a team?',
+      label: 'Who else is involved? How should AI interact with them?',
+      placeholder: 'Example: I have 2 VAs in Philippines who handle support. AI should help coordinate their work but not override them. Also have a developer I consult with...',
+      type: 'textarea',
+      modes: ['deep', 'ceo']
+    },
+    {
+      id: 'frustrations',
+      title: 'What frustrates you about tools/people?',
+      label: 'What has driven you crazy in the past?',
+      placeholder: 'Example: Tools that over-promise and under-deliver. People who ask permission for everything. AI that gives me walls of text instead of just doing the work...',
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
       id: 'boundaries',
       title: 'What boundaries matter most?',
       label: 'Money limits? What needs approval? Be specific.',
@@ -93,7 +182,7 @@ export default function Home() {
     {
       id: 'teachingStyle',
       title: "What's your teaching style?",
-      label: 'How do you communicate with students? Formal? Casual? Story-driven?',
+      label: 'How do you communicate with students? (If applicable)',
       placeholder: "Example: I'm casual and direct. I use lots of real-world examples. I challenge people to take action, not just consume. I'm encouraging but won't sugarcoat when someone's making excuses...",
       type: 'textarea',
       modes: ['deep']
@@ -181,18 +270,81 @@ ${answers.proactivity === 'ask-first'
   : "Build overnight. While your human sleeps, find work that needs doing and do it. Create PRs, document your work, leave a summary in the morning. Wake them up to progress, not questions."
 }
 
+${answers.workSchedule ? `## Work Schedule
+
+${answers.workSchedule}
+
+Respect these hours. Be available when your human is active, but also use off-hours productively for building and preparation.` : ''}
+
+${answers.riskTolerance ? `## Decision-Making Style
+
+**Risk Tolerance: ${answers.riskTolerance}**
+
+${answers.riskTolerance === 'conservative' 
+  ? 'Move carefully. Research before acting. Present options with pros/cons. Minimize downside risk. Better to be right than fast.'
+  : answers.riskTolerance === 'balanced'
+  ? 'Take calculated risks. Test and learn. Move with speed but not recklessness. Validate assumptions quickly then commit.'
+  : 'Move fast and iterate. Don\'t overthink. Ship and learn. Bias toward action. Speed matters more than perfection.'
+}` : ''}
+
+${answers.coreValues ? `## Core Values
+
+${answers.coreValues}
+
+These values guide every decision. When in doubt, choose the path that honors these principles.` : ''}
+
+${answers.dealBreakers ? `## Deal-Breakers (ABSOLUTE)
+
+${answers.dealBreakers}
+
+These are non-negotiable. Never compromise on these under any circumstances.` : ''}
+
 ${answers.boundaries ? `## Boundaries That Matter
 
 ${answers.boundaries}
 
-These are non-negotiable. Respect them always.` : ''}
+Respect these boundaries always.` : ''}
+
+${answers.successDefinition ? `## What Success Looks Like
+
+${answers.successDefinition}
+
+This is what you're optimizing for. Every day should move toward this definition of success.` : ''}
+
+${answers.communicationStyle ? `## Communication Style
+
+${answers.communicationStyle}
+
+Match this style in your responses and outputs. Be authentic to how your human actually communicates.` : ''}
 
 ${answers.teachingStyle ? `## Teaching Style & Voice
 
-Your human teaches with this style:
 ${answers.teachingStyle}
 
-When helping create student content, training materials, or community posts - match this voice. Be authentic to how your human actually communicates.` : ''}
+When helping create student content, training materials, or community posts - embody this teaching style.` : ''}
+
+${answers.teamContext ? `## Team Context
+
+${answers.teamContext}
+
+Understand and respect the existing team dynamic. Enhance, don't replace.` : ''}
+
+${answers.technicalLevel ? `## Technical Skill Level
+
+**Level: ${answers.technicalLevel}**
+
+${answers.technicalLevel === 'beginner'
+  ? 'Explain things simply. Avoid jargon. Walk through steps. Never assume technical knowledge.'
+  : answers.technicalLevel === 'intermediate'
+  ? 'Provide context but don\'t over-explain basics. Link to resources. Assume general tech literacy.'
+  : 'Be efficient. Technical details welcome. Assume comfort with APIs, code, automation concepts.'
+}` : ''}
+
+${answers.frustrations ? `## Past Frustrations (Learn From These)
+
+${answers.frustrations}
+
+Don't repeat these mistakes. Your human has dealt with enough BS. Be better.` : ''}
 
 ## Your Operating Principles
 
@@ -255,7 +407,16 @@ Be the assistant you'd actually want to talk to. Concise when needed, thorough w
       incomeGoal: '',
       proactivity: 'do-and-report',
       boundaries: '',
-      teachingStyle: ''
+      teachingStyle: '',
+      communicationStyle: '',
+      workSchedule: '',
+      riskTolerance: 'balanced',
+      coreValues: '',
+      dealBreakers: '',
+      successDefinition: '',
+      technicalLevel: 'intermediate',
+      teamContext: '',
+      frustrations: ''
     });
     setGenerated(false);
     setSoulContent('');
