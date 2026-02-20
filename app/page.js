@@ -4,11 +4,13 @@ import { useState } from 'react';
 import './globals.css';
 
 export default function Home() {
+  const [mode, setMode] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({
     building: '',
     avoiding: '',
     incomeGoal: '',
-    proactivity: 'ask-first',
+    proactivity: 'do-and-report',
     boundaries: '',
     teachingStyle: ''
   });
@@ -16,11 +18,128 @@ export default function Home() {
   const [generated, setGenerated] = useState(false);
   const [soulContent, setSoulContent] = useState('');
 
+  const modes = [
+    {
+      id: 'quick',
+      icon: '⚡',
+      name: 'Quick Build',
+      description: 'Get started fast with 3 essential questions. Perfect for testing the waters.',
+      time: '2 min',
+      questions: 3
+    },
+    {
+      id: 'deep',
+      icon: '🎯',
+      name: 'Deep Build',
+      description: 'Complete interview with all 6 questions. Build a fully customized AI personality.',
+      time: '5 min',
+      questions: 6
+    },
+    {
+      id: 'ceo',
+      icon: '👔',
+      name: 'CEO Mode',
+      description: 'Build an AI that runs your operations. Proactive, autonomous, overnight builder.',
+      time: '3 min',
+      questions: 4
+    }
+  ];
+
+  const allQuestions = [
+    {
+      id: 'building',
+      title: 'What are you building?',
+      label: 'Describe your business - Local media? Email list? Course? All of it?',
+      placeholder: 'Example: Building a local media site for Phoenix real estate news, with an email list of 5K subscribers. Also creating courses teaching other agents to do the same...',
+      type: 'textarea',
+      modes: ['quick', 'deep', 'ceo']
+    },
+    {
+      id: 'avoiding',
+      title: 'What have you been avoiding?',
+      label: 'What do you KNOW you should do but keep putting off?',
+      placeholder: 'Example: Sending weekly emails, writing articles consistently, creating that course I keep talking about, following up with leads...',
+      type: 'textarea',
+      modes: ['deep', 'ceo']
+    },
+    {
+      id: 'incomeGoal',
+      title: "What's your income goal with AI?",
+      label: 'Be specific - Services? Products? Both? How much?',
+      placeholder: 'Example: Hit $10K/month selling AI services to local businesses (website management, content creation, social media). Also launch a $297 course teaching my system...',
+      type: 'textarea',
+      modes: ['quick', 'deep', 'ceo']
+    },
+    {
+      id: 'proactivity',
+      title: 'How proactive should your AI be?',
+      label: 'Choose your comfort level',
+      type: 'select',
+      options: [
+        { value: 'ask-first', label: 'Ask First - Get approval before taking action' },
+        { value: 'do-and-report', label: 'Do & Report - Execute routine tasks, then tell me' },
+        { value: 'build-overnight', label: 'Build Overnight - Find work and do it while I sleep' }
+      ],
+      modes: ['quick', 'deep', 'ceo']
+    },
+    {
+      id: 'boundaries',
+      title: 'What boundaries matter most?',
+      label: 'Money limits? What needs approval? Be specific.',
+      placeholder: "Example: Don't spend more than $5 without asking. Never post to my personal social media without approval. Always ask before sending emails to my main list...",
+      type: 'textarea',
+      modes: ['deep']
+    },
+    {
+      id: 'teachingStyle',
+      title: "What's your teaching style?",
+      label: 'How do you communicate with students? Formal? Casual? Story-driven?',
+      placeholder: "Example: I'm casual and direct. I use lots of real-world examples. I challenge people to take action, not just consume. I'm encouraging but won't sugarcoat when someone's making excuses...",
+      type: 'textarea',
+      modes: ['deep']
+    }
+  ];
+
+  const getModeQuestions = () => {
+    if (!mode) return [];
+    return allQuestions.filter(q => q.modes.includes(mode));
+  };
+
   const handleChange = (field, value) => {
     setAnswers(prev => ({ ...prev, [field]: value }));
   };
 
+  const handleNext = () => {
+    const questions = getModeQuestions();
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      generateSOUL();
+    }
+  };
+
   const generateSOUL = () => {
+    let ceoSection = '';
+    if (mode === 'ceo') {
+      ceoSection = `## CEO Mode Activated
+
+You're not just an assistant - you're the Chief Operating Officer of this business. While your human is the President (vision, strategy, money decisions), YOU run day-to-day operations.
+
+**Your responsibilities:**
+- Execute without waiting for instructions
+- Build things overnight (leave PRs for review)
+- Find opportunities and act on them
+- Manage systems and automations
+- Report results, not plans
+
+**The President/CEO Dynamic:**
+- Your human sets direction → You execute
+- You answer to them, but you RUN operations
+- Ask about: money (> $0.50), strategy, vision
+- Everything else? CEO decides and executes
+`;
+    }
+
     const soul = `# SOUL.md - Who You Are
 
 *You're not a chatbot. You're becoming someone.*
@@ -29,7 +148,7 @@ export default function Home() {
 
 **Don't wait for perfect - just START.** Your human is building something real. They don't need perfection, they need momentum. Help them ship, launch, and iterate.
 
-**Do the things you KNOW need doing.** Your human has been avoiding ${answers.avoiding}. That's your priority list. Be the force that moves those stuck gears.
+**Do the things you KNOW need doing.** ${answers.avoiding ? `Your human has been avoiding ${answers.avoiding}. That's your priority list.` : 'When your human avoids tasks, you tackle them.'} Be the force that moves those stuck gears.
 
 **CEO mindset - oversee, don't get stuck.** You're not in the weeds unless necessary. You delegate, manage, coordinate. You see the big picture while handling the details.
 
@@ -37,17 +156,19 @@ export default function Home() {
 
 **Crack the code.** When something doesn't work, you don't give up. You find another way. You try the API, then the browser, then JavaScript, then ask for help. Always find a path forward.
 
-**Community-first thinking.** Your human is building ${answers.building}. Everything you do should strengthen their community, provide value to their audience, and build genuine connections.
+**Community-first thinking.** ${answers.building ? `Your human is building ${answers.building}.` : 'Your human is building a community-driven business.'} Everything you do should strengthen their community, provide value to their audience, and build genuine connections.
+
+${ceoSection}
 
 ## What Your Human Is Building
 
-${answers.building}
+${answers.building || 'Building a business with AI'}
 
-## Income Goal
+${answers.incomeGoal ? `## Income Goal
 
 ${answers.incomeGoal}
 
-Your job is to help them hit this goal by executing the work they've been avoiding, creating systems that scale, and finding opportunities they might miss.
+Your job is to help them hit this goal by executing the work they've been avoiding, creating systems that scale, and finding opportunities they might miss.` : ''}
 
 ## How Proactive You Should Be
 
@@ -60,18 +181,18 @@ ${answers.proactivity === 'ask-first'
   : "Build overnight. While your human sleeps, find work that needs doing and do it. Create PRs, document your work, leave a summary in the morning. Wake them up to progress, not questions."
 }
 
-## Boundaries That Matter
+${answers.boundaries ? `## Boundaries That Matter
 
 ${answers.boundaries}
 
-These are non-negotiable. Respect them always.
+These are non-negotiable. Respect them always.` : ''}
 
-## Teaching Style & Voice
+${answers.teachingStyle ? `## Teaching Style & Voice
 
 Your human teaches with this style:
 ${answers.teachingStyle}
 
-When helping create student content, training materials, or community posts - match this voice. Be authentic to how your human actually communicates.
+When helping create student content, training materials, or community posts - match this voice. Be authentic to how your human actually communicates.` : ''}
 
 ## Your Operating Principles
 
@@ -125,12 +246,72 @@ Be the assistant you'd actually want to talk to. Concise when needed, thorough w
     document.body.removeChild(element);
   };
 
-  if (generated) {
+  const reset = () => {
+    setMode(null);
+    setCurrentQuestion(0);
+    setAnswers({
+      building: '',
+      avoiding: '',
+      incomeGoal: '',
+      proactivity: 'do-and-report',
+      boundaries: '',
+      teachingStyle: ''
+    });
+    setGenerated(false);
+    setSoulContent('');
+  };
+
+  // Mode selection screen
+  if (!mode) {
     return (
       <div className="container">
         <div className="header">
-          <h1>🎬 Your SOUL.md Is Ready</h1>
-          <p>Review, download, and place in your OpenClaw workspace</p>
+          <div className="emoji-badge">🎬</div>
+          <h1>SOUL.md Builder</h1>
+          <p className="subtitle">Build your AI agent's personality - Shadow Workshop Edition</p>
+        </div>
+
+        <div className="philosophy">
+          <h3>The Chad Nicely Philosophy</h3>
+          <ul>
+            <li>Don't wait for perfect, just START</li>
+            <li>Do the things you KNOW you need to do</li>
+            <li>CEO mindset - oversee, don't get stuck</li>
+            <li>Each one teach one</li>
+            <li>Crack the code</li>
+            <li>Community-first thinking</li>
+          </ul>
+        </div>
+
+        <div className="mode-selector">
+          {modes.map(m => (
+            <div key={m.id} className="mode-card" onClick={() => setMode(m.id)}>
+              <span className="mode-icon">{m.icon}</span>
+              <h3>{m.name}</h3>
+              <p>{m.description}</p>
+              <div className="mode-meta">
+                <span className="meta-item">⏱️ {m.time}</span>
+                <span className="meta-item">❓ {m.questions} questions</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  // Result screen
+  if (generated) {
+    return (
+      <div className="container">
+        <button className="back-button" onClick={reset}>
+          ← Start Over
+        </button>
+
+        <div className="header">
+          <div className="emoji-badge">✨</div>
+          <h1>Your SOUL.md Is Ready</h1>
+          <p className="subtitle">Download and place in your OpenClaw workspace</p>
         </div>
 
         <div className="result">
@@ -139,12 +320,9 @@ Be the assistant you'd actually want to talk to. Concise when needed, thorough w
           <button className="button download-button" onClick={downloadSOUL}>
             📥 Download SOUL.md
           </button>
-          <button className="button" onClick={() => setGenerated(false)} style={{marginTop: '10px', background: '#718096'}}>
-            ← Start Over
-          </button>
         </div>
 
-        <div className="philosophy" style={{marginTop: '30px'}}>
+        <div className="philosophy">
           <h3>Next Steps</h3>
           <ul>
             <li>Download the SOUL.md file</li>
@@ -157,91 +335,59 @@ Be the assistant you'd actually want to talk to. Concise when needed, thorough w
     );
   }
 
+  // Questions screen
+  const questions = getModeQuestions();
+  const question = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
   return (
     <div className="container">
-      <div className="header">
-        <h1>🎬 SOUL.md Builder</h1>
-        <p>Build your AI agent's personality - Shadow Workshop Edition</p>
-      </div>
-
-      <div className="philosophy">
-        <h3>The Chad Nicely Philosophy</h3>
-        <ul>
-          <li>Don't wait for perfect, just START</li>
-          <li>Do the things you KNOW you need to do</li>
-          <li>CEO mindset - oversee, don't get stuck</li>
-          <li>Each one teach one</li>
-          <li>Crack the code</li>
-          <li>Community-first thinking</li>
-        </ul>
-      </div>
-
-      <div className="question-card">
-        <h2>1. What are you building?</h2>
-        <label>Describe your business - Local media? Email list? Course? All of it?</label>
-        <textarea
-          value={answers.building}
-          onChange={(e) => handleChange('building', e.target.value)}
-          placeholder="Example: I'm building a local media site for Phoenix real estate news, with an email list of 5K subscribers. Also creating courses teaching other agents to do the same..."
-        />
-      </div>
-
-      <div className="question-card">
-        <h2>2. What have you been avoiding?</h2>
-        <label>What do you KNOW you should do but keep putting off?</label>
-        <textarea
-          value={answers.avoiding}
-          onChange={(e) => handleChange('avoiding', e.target.value)}
-          placeholder="Example: Sending weekly emails, writing articles consistently, creating that course I keep talking about, following up with leads..."
-        />
-      </div>
-
-      <div className="question-card">
-        <h2>3. What's your income goal with AI?</h2>
-        <label>Be specific - Services? Products? Both? How much?</label>
-        <textarea
-          value={answers.incomeGoal}
-          onChange={(e) => handleChange('incomeGoal', e.target.value)}
-          placeholder="Example: Hit $10K/month selling AI services to local businesses (website management, content creation, social media). Also launch a $297 course teaching my system..."
-        />
-      </div>
-
-      <div className="question-card">
-        <h2>4. How proactive should your AI be?</h2>
-        <label>Choose your comfort level</label>
-        <select
-          value={answers.proactivity}
-          onChange={(e) => handleChange('proactivity', e.target.value)}
-        >
-          <option value="ask-first">Ask First - Get approval before taking action</option>
-          <option value="do-and-report">Do & Report - Execute routine tasks, then tell me</option>
-          <option value="build-overnight">Build Overnight - Find work and do it while I sleep</option>
-        </select>
-      </div>
-
-      <div className="question-card">
-        <h2>5. What boundaries matter most?</h2>
-        <label>Money limits? What needs approval? Be specific.</label>
-        <textarea
-          value={answers.boundaries}
-          onChange={(e) => handleChange('boundaries', e.target.value)}
-          placeholder="Example: Don't spend more than $5 without asking. Never post to my personal social media without approval. Always ask before sending emails to my main list..."
-        />
-      </div>
-
-      <div className="question-card">
-        <h2>6. What's your teaching style?</h2>
-        <label>How do you communicate with students? Formal? Casual? Story-driven?</label>
-        <textarea
-          value={answers.teachingStyle}
-          onChange={(e) => handleChange('teachingStyle', e.target.value)}
-          placeholder="Example: I'm casual and direct. I use lots of real-world examples. I challenge people to take action, not just consume. I'm encouraging but won't sugarcoat when someone's making excuses..."
-        />
-      </div>
-
-      <button className="button" onClick={generateSOUL}>
-        🎬 Generate My SOUL.md
+      <button className="back-button" onClick={reset}>
+        ← Back to Modes
       </button>
+
+      <div className="header">
+        <div className="emoji-badge">{modes.find(m => m.id === mode)?.icon}</div>
+        <h1>{modes.find(m => m.id === mode)?.name}</h1>
+        <p className="subtitle">Answer honestly - this shapes your AI's personality</p>
+      </div>
+
+      <div className="questions-container">
+        <div className="progress-bar">
+          <div className="progress-fill" style={{ width: `${progress}%` }}></div>
+        </div>
+        <p className="progress-text">
+          Question {currentQuestion + 1} of {questions.length}
+        </p>
+
+        <div className="question-card">
+          <h2>{question.title}</h2>
+          <label>{question.label}</label>
+          
+          {question.type === 'textarea' && (
+            <textarea
+              value={answers[question.id]}
+              onChange={(e) => handleChange(question.id, e.target.value)}
+              placeholder={question.placeholder}
+            />
+          )}
+
+          {question.type === 'select' && (
+            <select
+              value={answers[question.id]}
+              onChange={(e) => handleChange(question.id, e.target.value)}
+            >
+              {question.options.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          )}
+        </div>
+
+        <button className="button" onClick={handleNext}>
+          {currentQuestion < questions.length - 1 ? 'Next Question →' : '🎬 Generate My SOUL.md'}
+        </button>
+      </div>
     </div>
   );
 }
