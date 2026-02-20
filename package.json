@@ -1,0 +1,19 @@
+{
+  "name": "soul-builder",
+  "version": "1.0.0",
+  "description": "SOUL.md Builder for OpenClaw AI Agents",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "Chad Nicely",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  }
+}
